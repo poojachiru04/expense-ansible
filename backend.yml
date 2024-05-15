@@ -49,7 +49,7 @@
       ansible.builtin.dnf:
         name:
           - mysql
-          - python3-pyMySQL
+          - python3-PyMySQL
         state: present
 
     - name: load schema
