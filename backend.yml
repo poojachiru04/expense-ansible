@@ -42,7 +42,7 @@
         remote_src: true
 
     - name: Download nodejs app dependencies
-      community.builtin.dnf:
+      community.general.npm:
         path: /app
 
     - name: install mysql client and mysql python module
