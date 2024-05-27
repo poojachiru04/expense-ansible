@@ -20,7 +20,7 @@
 
 - name: import app prerequisites
   ansible.builtin.import_role:
-    name: commom
+    name: common
     tasks_from: app-prereq
 
 - name: Download nodejs app dependencies
