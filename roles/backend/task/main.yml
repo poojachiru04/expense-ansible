@@ -1,0 +1,61 @@
+- name: Disable nodejs default version
+  ansible.builtin.shell: dnf module disable nodejs -y
+
+- name: Enable Nodejs 20 version
+  ansible.builtin.shell: dnf module enable nodejs:20 -y
+
+- name: Install NodeJS
+  ansible.builtin.dnf:
+    name: nodejs
+    state: present
+
+- name: Add expense user
+  ansible.builtin.user:
+    name: expense
+
+- name: Copy backend service file
+  ansible.builtin.template:
+    src: backend.service
+    dest: /etc/systemd/system/backend.service
+
+- name: Delete existing application directory
+  ansible.builtin.file:
+    name: /app
+    state: absent
+
+- name: create application directory
+  ansible.builtin.file:
+    name: /app
+    state: directory
+
+- name: Download & extract backend code
+  ansible.builtin.unarchive:
+    src:  https://expense-artifacts.s3.amazonaws.com/expense-backend-v2.zip
+    dest: /app
+    remote_src: true
+
+- name: Download nodejs app dependencies
+  community.general.npm:
+    path: /app
+
+- name: install mysql client and mysql python module
+  ansible.builtin.dnf:
+    name:
+      - mysql
+      - python3-PyMySQL
+    state: present
+
+- name: load schema
+  community.mysql.mysql_db:
+    state: import
+    name: all
+    target: /app/schema/backend.sql
+    login_user: root
+    login_password: ExpenseApp@1
+    login_host: mysql-{{env}}.poodevops.online
+
+- name: start backend service
+  ansible.builtin.systemd_service:
+    name: backend
+    state: restarted
+    enabled: true
