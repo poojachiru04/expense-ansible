@@ -59,7 +59,7 @@
         target: /app/schema/backend.sql
         login_user: root
         login_password: ExpenseApp@1
-        login_host: 172.31.24.227
+        login_host: mysql-dev.poodevops.online
 
     - name: start backend service
       ansible.builtin.systemd_service:
