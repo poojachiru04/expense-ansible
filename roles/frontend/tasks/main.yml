@@ -8,21 +8,10 @@
     src: expense.conf
     dest: /etc/nginx/default.d/expense.conf
 
-- name: Remove old html Directory
-  ansible.builtin.file:
-    path: /usr/share/nginx/html
-    state: absent
-
-- name: create html Directory
-  ansible.builtin.file:
-    path: /usr/share/nginx/html
-    state: directory
-
-- name: Download frontend content & extract
-  ansible.builtin.unarchive:
-    src: https://expense-artifacts.s3.amazonaws.com/expense-frontend-v2.zip
-    dest: /usr/share/nginx/html
-    remote_src: true
+- name: import app prerequisites
+  ansible.builtin.import_role:
+    name: commom
+    tasks_from: app-prereq
 
 - name: Start nginx service
   ansible.builtin.systemd_service:
