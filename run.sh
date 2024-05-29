@@ -1,4 +1,4 @@
-## For template pipeline we will skip the ansible run
+
 if [ "$pipeline" == "true" ]; then
   exit
 fi
