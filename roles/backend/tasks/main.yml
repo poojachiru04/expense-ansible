@@ -37,11 +37,11 @@
 # name: load schema
 #community.mysql.mysql_db:
 # state: import
-    #name: all
-    #target: /app/schema/backend.sql
-    #login_user: root
-    #login_password: ExpenseApp@1
-    #login_host: mysql-{{env}}.poodevops.online
+#name: all
+#target: /app/schema/backend.sql
+#login_user: root
+#login_password: ExpenseApp@1
+#login_host: mysql-{{env}}.poodevops.online
 
 - name: load schema
   ansible.builtin.shell: mysql -h mysql-{{env}}.poodevops.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
