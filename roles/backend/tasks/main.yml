@@ -39,8 +39,8 @@
 # state: import
 #name: all
 #target: /app/schema/backend.sql
-#login_user: root
-#login_password: ExpenseApp@1
+#login_user: mysql_username
+#login_password: mysql_password
 #login_host: mysql-{{env}}.poodevops.online
 
 - name: load schema
