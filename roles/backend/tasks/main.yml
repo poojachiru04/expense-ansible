@@ -34,17 +34,14 @@
       - python3-PyMySQL
     state: present
 
-# name: load schema
-#community.mysql.mysql_db:
-# state: import
-#name: all
-#target: /app/schema/backend.sql
-#login_user: mysql_username
-#login_password: mysql_password
-#login_host: mysql-{{env}}.poodevops.online
-
 - name: load schema
-  ansible.builtin.shell: mysql -h mysql-{{env}}.poodevops.online -uroot -pExpenseApp@1 < /app/schema/backend.sql
+  community.mysql.mysql_db:
+   state: import
+   name: all
+   target: /app/schema/backend.sql
+   login_user: "{{ secrets.mysql_username }}"
+   login_password: "{{ secrets.mysql_password }}"
+   login_host: mysql-{{env}}.poodevops.online
 
 - name: start backend service
   ansible.builtin.systemd_service:
