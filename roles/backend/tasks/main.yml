@@ -39,10 +39,9 @@
    state: import
    name: all
    target: /app/schema/backend.sql
-   login_user: "{{ secret.mysql_username }}"
-   login_password: "{{ secret.mysql_password }}"
+   login_user: "{{ secrets.mysql_username }}"
+   login_password: "{{ secrets.mysql_password }}"
    login_host: mysql-{{env}}.poodevops.online
-
 
 - name: start backend service
   ansible.builtin.systemd_service:
