@@ -15,9 +15,9 @@
     src: node-exporter.service
     dest: /etc/systemd/system/prometheus.service
 
-- name: Start node-exporter Service
+- name: Start node exporter Service
   ansible.builtin.systemd_service:
-    name: node-exporter service
+    name: node-exporter
     state: restarted
     enabled: yes
     daemon-reload: yes
