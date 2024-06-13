@@ -34,6 +34,13 @@
       - python3-PyMySQL
     state: present
 
+- name: Install Python MySQL Client
+  ansible.builtin.pip:
+    name:
+      - PyMySQL
+      - cryptography
+    executable: pip3.11
+
 - name: load schema
   community.mysql.mysql_db:
    state: import
