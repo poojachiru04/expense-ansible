@@ -3,6 +3,11 @@
     name: mysql-server
     state: present
 
+- name:  install hvac
+  ansible.builtin.shell: |
+    pip3.9 install hvac
+    pip3.11 install hvac    
+
 - name: Start mysql service
   ansible.builtin.systemd_service:
     name: mysqld
