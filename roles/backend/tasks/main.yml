@@ -27,6 +27,11 @@
   community.general.npm:
     path: /app
 
+- name:  install hvac
+  ansible.builtin.shell: |
+    pip3.9 install hvac
+    pip3.11 install hvac    
+
 - name: install mysql client and mysql python module
   ansible.builtin.dnf:
     name:
