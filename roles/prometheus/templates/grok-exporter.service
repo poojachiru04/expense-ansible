@@ -1,5 +1,5 @@
 [Unit]
-Description = grok Exporter Service
+Description = Node Exporter Service
 
 [Service]
 User=root
