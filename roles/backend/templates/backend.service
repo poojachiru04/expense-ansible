@@ -3,6 +3,7 @@ Description = Backend Service
 
 [Service]
 User=expense
+WorkingDirectory=/app
 Environment=DB_HOST="backend-{{env}}.poodevops.online"
 ExecStart=/bin/node /app/index.js
 SyslogIdentifier=backend
