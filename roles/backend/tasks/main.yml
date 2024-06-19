@@ -11,7 +11,7 @@
 
 - name: Add expense user
   ansible.builtin.user:
-    name: expense
+    name: "{{app_user}}"
 
 - name: Copy backend service file
   ansible.builtin.template:
@@ -26,6 +26,12 @@
 - name: Download nodejs app dependencies
   community.general.npm:
     path: /app
+  become_user: "{{app_user}}"
+
+- name: Download NewRelic dependencies
+  community.general.npm:
+    path: /app
+  become_user: "{{app_user}}"
 
 - name:  install hvac
   ansible.builtin.shell: |
