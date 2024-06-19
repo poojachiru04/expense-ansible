@@ -17,3 +17,8 @@
     name: prometheus
     tasks_from: grok-exporter
   when: install_grok_exporter
+
+- name: Install Filebeat
+  ansible.builtin.include_role:
+    name: filebeat
+  when: install_filebeat
