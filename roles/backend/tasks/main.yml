@@ -30,6 +30,7 @@
 
 - name: Download NewRelic dependencies
   community.general.npm:
+    name: newrelic
     path: /app
   become_user: "{{app_user}}"
 
@@ -59,7 +60,7 @@
    target: /app/schema/backend.sql
    login_user: "{{ secrets.mysql_username }}"
    login_password: "{{ secrets.mysql_password }}"
-   login_host: mysql-{{env}}.poodevops.online
+   login_host: "{{ secrets.DB_HOST }}"
 
 - name: start backend service
   ansible.builtin.systemd_service:
