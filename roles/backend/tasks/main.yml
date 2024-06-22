@@ -1,70 +1,87 @@
-- name: Disable nodejs default version
-  ansible.builtin.shell: dnf module disable nodejs -y
+# - name: Disable NodeJS Default Version
+#   ansible.builtin.shell: dnf module disable nodejs -y
+#
+# - name: Enable NodeJS 20 Version
+#   ansible.builtin.shell: dnf module enable nodejs:20 -y
+#
+# - name: Install NodeJS
+#   ansible.builtin.dnf:
+#     name: nodejs
+#     state: present
+#
+# - name: Add Expense User
+#   ansible.builtin.user:
+#     name: "{{app_user}}"
+#
+# - name: Copy Backend Service file
+#   ansible.builtin.template:
+#     src: backend.service
+#     dest: /etc/systemd/system/backend.service
+#
+# - name: Import App Prerequisites
+#   ansible.builtin.import_role:
+#     name: common
+#     tasks_from: app-prereq
+#
+# - name: Download NodeJS App Dependencies
+#   community.general.npm:
+#     path: /app
+#   become_user: "{{app_user}}"
+#
+# - name: Download NewRelic Dependencies
+#   community.general.npm:
+#     name: newrelic
+#     path: /app
+#   become_user: "{{app_user}}"
 
-- name: Enable Nodejs 20 version
-  ansible.builtin.shell: dnf module enable nodejs:20 -y
+# - name: Install MySQL Client & MySQL Python Module
+#   ansible.builtin.dnf:
+#     name:
+#       - mysql
+#       - python3-PyMySQL
+#     state: present
+#
+# - name: Load Schema
+#   community.mysql.mysql_db:
+#     state: import
+#     name: all
+#     target: /app/schema/backend.sql
+#     login_user: "{{ secrets.MYSQL_USER }}"
+#     login_password: "{{ secrets.MYSQL_PASS }}"
+#     login_host: "{{ secrets.DB_HOST }}"
 
-- name: Install NodeJS
+- name: Install Docker
   ansible.builtin.dnf:
-    name: nodejs
-    state: present
+    name: docker
+    state: installed
 
-- name: Add expense user
-  ansible.builtin.user:
-    name: "{{app_user}}"
+- name: Run Schema Container
+  containers.podman.podman_container:
+    name: schema
+    image: docker.io/poojasunil/schema-loader:latest
+    state: started
+    restart: true
+    env:
+      login_user: "{{ secrets.MYSQL_USER }}"
+      login_password: "{{ secrets.MYSQL_PASS }}"
+      login_host: "{{ secrets.DB_HOST }}"
+      app_repo: https://github.com/poojachiru04/expense-backend
+      schema_file: /app/schema/backend.sql
 
-- name: Copy backend service file
-  ansible.builtin.template:
-    src: backend.service
-    dest: /etc/systemd/system/backend.service
-
-- name: import app prerequisites
-  ansible.builtin.import_role:
-    name: common
-    tasks_from: app-prereq
-
-- name: Download nodejs app dependencies
-  community.general.npm:
-    path: /app
-  become_user: "{{app_user}}"
-
-- name: Download NewRelic dependencies
-  community.general.npm:
-    name: newrelic
-    path: /app
-  become_user: "{{app_user}}"
-
-- name:  install hvac
-  ansible.builtin.shell: |
-    pip3.9 install hvac
-    pip3.11 install hvac    
-
-- name: install mysql client and mysql python module
-  ansible.builtin.dnf:
-    name:
-      - mysql
-      - python3-PyMySQL
-    state: present
-
-- name: Install Python MySQL Client
-  ansible.builtin.pip:
-    name:
-      - PyMySQL
-      - cryptography
-    executable: pip3.11
-
-- name: load schema
-  community.mysql.mysql_db:
-   state: import
-   name: all
-   target: /app/schema/backend.sql
-   login_user: "{{ secrets.mysql_username }}"
-   login_password: "{{ secrets.mysql_password }}"
-   login_host: "{{ secrets.DB_HOST }}"
-
-- name: start backend service
-  ansible.builtin.systemd_service:
+- name: Run Backend container
+  containers.podman.podman_container:
     name: backend
-    state: restarted
-    enabled: true
-    daemon_reload: true
+    image: docker.io/poojasunil/backend
+    state: started
+    restart: true
+    ports:
+      - "8080:8080"
+    env:
+      DB_HOST: "{{ secrets.DB_HOST }}"
+
+# - name: Start Backend Service
+#   ansible.builtin.systemd_service:
+#     name: backend
+#     state: restarted
+#     enabled: true
+#     daemon_reload: true
