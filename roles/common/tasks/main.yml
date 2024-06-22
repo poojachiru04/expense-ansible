@@ -27,3 +27,6 @@
   ansible.builtin.include_role:
     name: rsyslog
   when: configure_rsyslog
+
+- name: Extend Partition
+  ansible.builtin.shell: growpart /dev/nvme0n1 4 ; lvextend -l +100%FREE /dev/mapper/RootVG-varVol ; xfs_growfs /var
