@@ -1,19 +1,30 @@
-- name: Installing mysql server
+# - name: Installing MySQL Server
+#   ansible.builtin.dnf:
+#     name: mysql-server
+#     state: present
+#
+# - name: Start MySQL Service
+#   ansible.builtin.systemd_service:
+#     name: mysqld
+#     state: restarted
+#     enabled: true
+#
+# - name: Set Root Password
+#   ansible.builtin.shell: mysql_secure_installation --set-root-pass {{ secrets.MYSQL_PASS }}
+#   ignore_errors: yes
+
+- name: Install Docker
   ansible.builtin.dnf:
-    name: mysql-server
-    state: present
+    name: docker
+    state: installed
 
-- name:  install hvac
-  ansible.builtin.shell: |
-    pip3.9 install hvac
-    pip3.11 install hvac    
-
-- name: Start mysql service
-  ansible.builtin.systemd_service:
-    name: mysqld
+- name: Run MySQL
+  containers.podman.podman_container:
+    name: mysql
+    image: docker.io/mysql:8.0
     state: started
-    enabled: true
-
-- name: set root password
-  ansible.builtin.shell: mysql_secure_installation --set-root-pass {{ secrets.mysql_password }}
-  ignore_errors: yes
+    restart: true
+    ports:
+      - "3306:3306"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ secrets.MYSQL_PASS }}"
