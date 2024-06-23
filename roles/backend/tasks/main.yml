@@ -55,7 +55,7 @@
     name: docker
     state: installed
 
-- name: Pull the schema-loader image
+- name: Pull the schema image
   ansible.builtin.docker_image:
     name: docker.io/poojasunil/schema-loader
     tag: v1.0
