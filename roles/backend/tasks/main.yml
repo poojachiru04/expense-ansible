@@ -55,12 +55,6 @@
     name: docker
     state: installed
 
-- name: Pull the schema image
-  ansible.builtin.docker_image:
-    name: docker.io/poojasunil/schema-loader
-    tag: v1.0
-    source: pull
-
 - name: Run Schema Container
   containers.podman.podman_container:
     name: schema
